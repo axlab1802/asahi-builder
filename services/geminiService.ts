@@ -57,7 +57,7 @@ export class GeminiService {
   private modelId: string = "gemini-2.5-flash";
 
   constructor() {
-    const apiKey = process.env.API_KEY;
+    const apiKey = import.meta.env.VITE_API_KEY;
     if (!apiKey) {
       console.error("API_KEY is missing!");
     }
