@@ -1,10 +1,10 @@
 import { MapItem } from './types';
 
-// Asahi City Base Population (Approximate)
-export const BASE_POPULATION = 64000;
+// Asahi City Base Population (2026年1月1日現在)
+export const BASE_POPULATION = 59948;
 
-// Asahi City Base Estimated Tax Revenue (Approx 15 billion JPY)
-export const BASE_TAX_REVENUE = 15000000000;
+// Asahi City Base Estimated Tax Revenue (令和6年度一般会計予算 約220億円)
+export const BASE_TAX_REVENUE = 22000000000;
 
 // Initial landmarks for Asahi City (Real coordinates)
 // Center roughly: 35.72, 140.65
@@ -78,7 +78,7 @@ export const SYSTEM_INSTRUCTION = `
 **ゲームの目標: 人口100万人 & 税収アップ計画**
 - ユーザーは旭市の人口を**100万人（1,000,000人）**にすることを目指しています。
 - また、市の財政を豊かにするために**予想税収 (taxRevenue)**も増やす必要があります。
-- 現在の基礎人口は約64,000人、基礎税収は約150億円です。
+- 現在の基礎人口は約60,000人、基礎税収は約220億円です。
 - 施設を追加する際は、その規模や魅力に応じて**人口増加数 (population)** と **予想税収 (taxRevenue)** を設定してください。
 - 建設枠が少ない（全5回）ため、ユーザーがワクワクするような大きな数字を提案してください。
 

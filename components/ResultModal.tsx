@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { HighScore } from '../types';
+import { findClosestCityByPopulation, findClosestCityByTaxRevenue } from '../data/referenceCities';
 
 interface ResultModalProps {
   score: number;
@@ -20,6 +21,9 @@ const ResultModal: React.FC<ResultModalProps> = ({ score, taxRevenue, highScores
   const [name, setName] = useState('');
   const [isRegistered, setIsRegistered] = useState(false);
 
+  const closestPopulationCity = useMemo(() => findClosestCityByPopulation(score), [score]);
+  const closestTaxRevenueCity = useMemo(() => findClosestCityByTaxRevenue(taxRevenue), [taxRevenue]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
@@ -39,7 +43,7 @@ const ResultModal: React.FC<ResultModalProps> = ({ score, taxRevenue, highScores
         </div>
         
         <div className="p-6">
-          <div className="flex justify-center gap-8 mb-8">
+          <div className="flex justify-center gap-8 mb-6">
             <div className="text-center">
                 <div className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-1">最終人口</div>
                 <div className="text-3xl font-black text-gray-800 tracking-tight">
@@ -52,6 +56,68 @@ const ResultModal: React.FC<ResultModalProps> = ({ score, taxRevenue, highScores
                 <div className="text-3xl font-black text-green-700 tracking-tight">
                 {formatMoney(taxRevenue)}<span className="text-sm text-gray-400 ml-1">円</span>
                 </div>
+            </div>
+          </div>
+
+          <div className="mb-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-100">
+            <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 text-center">🌍 世界都市比較</div>
+            <div className="space-y-3">
+              {closestPopulationCity && (
+                <div className="bg-white rounded-lg p-3 shadow-sm">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">{closestPopulationCity.emoji}</span>
+                      <div>
+                        <div className="text-sm font-bold text-gray-800">{closestPopulationCity.nameJa}</div>
+                        <div className="text-xs text-gray-500">{closestPopulationCity.country}</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs text-blue-600 font-bold">人口規模</div>
+                      <div className="text-sm font-bold text-gray-700">{(closestPopulationCity.population / 10000).toFixed(0)}万人</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-1000"
+                        style={{ width: `${Math.min((score / closestPopulationCity.population) * 100, 100)}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-gray-600 font-medium w-12 text-right">
+                      {((score / closestPopulationCity.population) * 100).toFixed(0)}%
+                    </span>
+                  </div>
+                </div>
+              )}
+              {closestTaxRevenueCity && (
+                <div className="bg-white rounded-lg p-3 shadow-sm">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">{closestTaxRevenueCity.emoji}</span>
+                      <div>
+                        <div className="text-sm font-bold text-gray-800">{closestTaxRevenueCity.nameJa}</div>
+                        <div className="text-xs text-gray-500">{closestTaxRevenueCity.country}</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs text-green-600 font-bold">税収規模</div>
+                      <div className="text-sm font-bold text-gray-700">{formatMoney(closestTaxRevenueCity.taxRevenue)}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all duration-1000"
+                        style={{ width: `${Math.min((taxRevenue / closestTaxRevenueCity.taxRevenue) * 100, 100)}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-gray-600 font-medium w-12 text-right">
+                      {((taxRevenue / closestTaxRevenueCity.taxRevenue) * 100).toFixed(0)}%
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

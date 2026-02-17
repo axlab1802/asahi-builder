@@ -2,9 +2,11 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import ChatInterface from './components/ChatInterface';
 import MapCanvas from './components/MapCanvas';
 import ResultModal from './components/ResultModal';
+import CityComparison from './components/CityComparison';
 import { geminiService } from './services/geminiService';
 import { INITIAL_MAP_ITEMS, BASE_POPULATION, BASE_TAX_REVENUE } from './constants';
 import { ChatMessage, MapItem, ViewMode, HighScore } from './types';
+import { findClosestCityByPopulation, findClosestCityByTaxRevenue } from './data/referenceCities';
 import { v4 as uuidv4 } from 'uuid'; 
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
@@ -47,6 +49,16 @@ const App: React.FC = () => {
   }, [items]);
 
   const populationProgress = Math.min((currentPopulation / 1000000) * 100, 100);
+
+  const closestPopulationCity = useMemo(() => 
+    findClosestCityByPopulation(currentPopulation), 
+    [currentPopulation]
+  );
+
+  const closestTaxRevenueCity = useMemo(() => 
+    findClosestCityByTaxRevenue(currentTaxRevenue), 
+    [currentTaxRevenue]
+  );
 
   // Population Delta Animation Logic
   const [delta, setDelta] = useState<number | null>(null);
@@ -265,6 +277,13 @@ const App: React.FC = () => {
             <div className="mt-2 text-right text-[10px] text-gray-400">
                 達成率: {populationProgress.toFixed(1)}%
             </div>
+
+            <CityComparison 
+              populationCity={closestPopulationCity}
+              taxRevenueCity={closestTaxRevenueCity}
+              currentPopulation={currentPopulation}
+              currentTaxRevenue={currentTaxRevenue}
+            />
         </div>
 
         {/* View Mode Toggle */}
